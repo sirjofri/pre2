@@ -21,7 +21,7 @@
 			var last=black;
 			var action="bild";
 			
-			var about_dialog="<center>&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz<center>";
+			var about_dialog="&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz";
 
 			window.setInterval("startClock();",1000);
 
@@ -141,8 +141,9 @@
 			function show_about()
 			{
 				document.getElementById("about").style.display="block";
+				document.getElementById("about").innerHTML="<center>";
 				document.getElementById("about").innerHTML=about_dialog;
-				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"Close\" onclick=\"hide_about();\">";
+				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"Close\" onclick=\"hide_about();\"></center>";
 			}
 			
 			function hide_about()
