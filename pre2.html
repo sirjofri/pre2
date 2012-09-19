@@ -21,6 +21,7 @@
 			var aktuell=black;
 			var last=black;
 			var action="bild";
+			var lastz=0;
 			
 			var about_dialog="&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz";
 
@@ -363,6 +364,10 @@
 				dragy=posy-dragobject.offsetTop;
 				dragobject.style.border="dashed";
 				dragobject.style.borderWidth="1px";
+				lastz=lastz++;
+				dragobject.style.zIndex=lastz;
+				document.getElementById("warner")
+				style.zIndex=lastz;
 			}
 
 			function dragstop()
@@ -445,14 +450,14 @@
 		</script>
 	</head>
 	<body onload="setUp();" onkeydown="keyPressed();" onbeforeunload="closeView();">
-		<div id="clock" onmousedown="dragstart(this);" style="position:absolute;left:30px;top:500px;cursor:default;"></div>
-		<div id="addbox" onmousedown="dragstart(this);" style="position:absolute;left:20px;top:300px;">
+		<div id="clock" onmousedown="dragstart(this);" style="z-index:0; position:absolute;left:30px;top:500px;cursor:default;"></div>
+		<div id="addbox" onmousedown="dragstart(this);" style="z-index:0; position:absolute;left:20px;top:300px;">
 			<form name="addForm" onsubmit="add(this.datei.value,this.comment.value);" action="void(0);">
 				<input type="text" name="datei" value="Dateiname" onclick="this.value=='Dateiname'?this.value='':void(0);" onblur="if(this.value=='') this.value='Dateiname';" onchange="addFormChange(this.value);" onmousedown="void(0);" onkeypress="return noreturn(event);"><br>
 				<input type="text" name="comment" value="Kommentar/Titel" onclick="this.value=='Kommentar/Titel'?this.value='':void(0);" onblur="if(this.value=='') this.value='Kommentar/Titel';" onmousedown="void(0);" onkeypress="return noreturn(event);"><br>
 				<input type="button" onclick="add(document.addForm.datei.value,document.addForm.comment.value);" value="Hinzuf&uuml;gen">
 		</div>
-		<div id="action" onmousedown="dragstart(this);" style="left:20px;top:20px;">
+		<div id="action" onmousedown="dragstart(this);" style="z-index:0; left:20px;top:20px;">
 			<u><b>Aktionen:</b></u><br>
 			<input type="button" value="schwarz" onclick="actionSchwarz();" id="buttonSchwarz"><br>
 			<input type="button" value="bild" onclick="actionBild();" id="buttonBild"><br>
@@ -463,11 +468,11 @@
 			<a href="#" onclick="show_about();">About</a><br>
 		</div>
 
-		<div id="list" onmousedown="dragstart(this);" style="left:220px;top:20px;cursor:default;">
+		<div id="list" onmousedown="dragstart(this);" style="z-index:0; left:220px;top:20px;cursor:default;">
 			Liste muss erst noch geladen werden.
 		</div>
 
-		<div id="preview" onmousedown="dragstart(this);" style="left:450px;top:20px;"></div>
+		<div id="preview" onmousedown="dragstart(this);" style="z-index:0; left:450px;top:20px;"></div>
 
 		<div id="prepreview" style="position:absolute;background-color:#000;"></div>
 		<div id="about" style="position:absolute;background-color:000;left:200px;top:100px;" onmousedown="dragstart(this);"></div>
