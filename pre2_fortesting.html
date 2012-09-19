@@ -1,0 +1,460 @@
+<html>
+	<head>
+		<title>Pr&auml;sentationstool</title>
+		<link rel="shortcut icon" type="image/x-icon" href="/pre2.ico">
+		<style type="text/css">
+		body { background-color:#000;color:#0f0;user-select:none;-khtml-user-select:none;-moz-user-select:none;-webkit-user-select:none;overflow=hidden; }
+		div { position:absolute;background-color:#000;border:solid;border-color:#0f0;border-width:1px;padding:15px;color:#0f0; }
+		a:link,a:visited { color:#0f0;text-decoration:none; }
+		a:active,a:hover { text-decoration:underline;color:#0f0; }
+		input { background-color:#000;border:solid;border-color:#0f0;border-width:1px;color:#0f0;padding:5px; }
+		input:hover { background-color:#0f0;color:#000; }
+		#new,#old { position:absolute;border:solid;border-color:#0f0;border-width:1px; }
+		#buttonBild { background-color:#0f0;color:#000; }
+		#warner { display:none; }
+		</style>
+		<script type="text/javascript" language="javascript"><!--
+			var list=new Array();
+			var listc=new Array();
+			var black="black.jpg";
+			var fenster;
+			var aktuell=black;
+			var last=black;
+			var action="bild";
+
+			window.setInterval("startClock();",1000);
+
+			function setUp()
+			{
+				document.getElementById("jscheck").style.display="none";
+				document.getElementById("list").innerHTML="Laden...";
+				fenster=window.open("about:blank","VIEW","scrollbars=false");
+				fenster.document.write("<html><head><title>VIEW<\/title><style type=\"text\/css\">img { position:absolute;top:0px;left:0px; } #new { opacity:0.0; }<\/style><\/head><body style=\"overflow:hidden;background-color:#000;\"><div id=\"viewbody\" style=\"background-color:#000;\"><img src=\""+black+"\" id=\"old\"><img src=\""+black+"\" id=\"new\"></div><\/body><\/html>");
+				fenster.focus();
+
+				document.onmousemove=drag;
+				document.onmouseup=dragstop;
+
+				loadFromStorage();
+				loadList();
+				
+				document.getElementById("prepreview").style.display="none";
+			}
+
+			function openView()
+			{
+				if(fenster.closed)
+				{
+					fenster=window.open("about:blank","VIEW","scrollbars=false");
+					fenster.document.write("<html><head><title>VIEW<\/title><style type=\"text\/css\">img { position:absolute;top:0px;left:0px; } #new { opacity:0.0; }<\/style><\/head><body style=\"overflow:hidden;background-color:#000;\"><div id=\"viewbody\" style=\"background-color:#000;\"></div><\/body><\/html>");
+					fenster.focus();
+					showImage(aktuell);
+				} else {
+					warn("Fenster bereits offen");
+				}
+			}
+
+			function closeView()
+			{
+				if(!fenster.closed)
+				{
+					fenster.close();
+				} else {
+					warn("Fenster bereits zu");
+				}
+			}
+
+			function loadFromStorage()
+			{
+				var i=0;
+				while(localStorage.getItem("l"+i.toString())!=undefined)
+				{
+					i=i+1;
+				}
+				for(var j=0;j<i;j++)
+				{
+					list[j]=localStorage.getItem("l"+j.toString());
+				}
+				var i=0;
+				while(localStorage.getItem("c"+i.toString())!=undefined)
+				{
+					i=i+1;
+				}
+				for(var j=0;j<i;j++)
+				{
+					listc[j]=localStorage.getItem("c"+j.toString());
+				}
+			}
+
+			function loadList()
+			{
+				document.getElementById("list").innerHTML="<u><b>Liste:</b></u><br>";
+
+				while(list.length!=0)
+				{
+					var image=list.shift();
+					var comment=listc.shift();
+					document.getElementById("list").innerHTML+="<a href=\"#\" onclick=\"deleteItem('"+image+comment+"');\">[-]</a>&nbsp;<a href=\"#\" onclick=\"moveDown('"+image+comment+"');\">&darr;</a><a href=\"#\" onclick=\"moveUp('"+image+comment+"');\">&uarr;</a>&nbsp;<a href=\"#\" onclick=\"showImage('"+image+"');\" onmouseover=\"prepreview('"+image+"');\" onmousemove=\"prepreview('"+image+"');\" onmouseout=\"hideprepreview();\">"+comment+"<\/a>&nbsp;<acronym title=\""+image+"\">[i]</acronym><br>";
+				}
+			}
+
+			function add(file,comment)
+			{
+			if(file!="" && comment!="" && file!="Dateiname" && comment!="Kommentar/Titel")
+			{
+				if(getEnding(file)==".jpeg" || getEnding(file)==".jpg" || getEnding(file)==".png" || getEnding(file)==".gif")
+				{
+					var i=0;
+					while(localStorage.getItem("l"+i.toString())!=undefined)
+					{
+						i=i+1;
+					}
+					var existiert=false;
+					for(var j=0;j<i+1;j++)
+					{
+						if(localStorage.getItem("l"+j.toString())+localStorage.getItem("c"+j.toString())==file+comment)
+						{
+							existiert=true;
+						}
+					}
+					if(existiert==false)
+					{
+						localStorage.setItem("l"+i.toString(),file);
+						localStorage.setItem("c"+i.toString(),comment);
+						document.addForm.datei.value="";
+						document.addForm.comment.value="Kommentar/Titel";
+						document.addForm.datei.focus();
+					} else {
+						warn("Existiert bereits!");
+					}
+				} else {
+					warn("kein unterst&uuml;tzter Dateityp");
+				}
+			} else {
+				warn("Nicht vollst&auml;ndig ausgef&uuml;llt.");
+			}
+			loadFromStorage();
+			loadList();
+			}
+
+			function addFormChange(file)
+			{
+				if(file.search("Dateiname")!=-1)
+				{
+					document.addForm.datei.value=file.replace(/Dateiname/g, "");
+				}
+			}
+
+			function deleteItem(teil)
+			{
+				var i=0;
+				while(localStorage.getItem("l"+i.toString())!=undefined)
+				{
+					i=i+1;
+				}
+				for(var j=0;j<i;j++)
+				{
+					if(localStorage.getItem("l"+j.toString())+localStorage.getItem("c"+j.toString())==teil)
+					{
+						if(localStorage.getItem("l"+(j+1).toString())==undefined)
+						{
+							localStorage.removeItem("l"+j.toString());
+							localStorage.removeItem("c"+j.toString());
+						} else {
+							warn("Element nicht ganz unten");
+						}
+					}
+				}
+				loadFromStorage();
+				loadList();
+			}
+			
+			function moveDown(ding) // Verschiebt immer nach ganz unten... warum???
+			{
+				var i=0;
+				while(localStorage.getItem("l"+i.toString())!=undefined)
+				{
+					i=i+1;
+				}
+				for(var j=0;j<i-1;j++)
+				{
+					if(localStorage.getItem("l"+j.toString())+localStorage.getItem("c"+j.toString())==ding)
+					{
+						var sichlist=localStorage.getItem("l"+j.toString());
+						var sichcom=localStorage.getItem("c"+j.toString());
+						localStorage.setItem("l"+j.toString(),localStorage.getItem("l"+(j+1).toString()));
+						localStorage.setItem("c"+j.toString(),localStorage.getItem("c"+(j+1).toString()));
+						localStorage.setItem("l"+(j+1).toString(),sichlist);
+						localStorage.setItem("c"+(j+1).toString(),sichcom);
+						break;
+					}
+				}
+				loadFromStorage();
+				loadList();
+			}
+
+			function moveUp(ding)
+			{
+				var i=0;
+				while(localStorage.getItem("l"+i.toString())!=undefined)
+				{
+					i=i+1;
+				}
+				for(var j=1;j<i;j++)
+				{
+					if(localStorage.getItem("l"+j.toString())+localStorage.getItem("c"+j.toString())==ding)
+					{
+						var sichlist=localStorage.getItem("l"+j.toString());
+						var sichcom=localStorage.getItem("c"+j.toString());
+						localStorage.setItem("l"+j.toString(),localStorage.getItem("l"+(j-1).toString()));
+						localStorage.setItem("c"+j.toString(),localStorage.getItem("c"+(j-1).toString()));
+						localStorage.setItem("l"+(j-1).toString(),sichlist);
+						localStorage.setItem("c"+(j-1).toString(),sichcom);
+						break;
+					}
+				}
+				loadFromStorage();
+				loadList();
+			}
+
+			function showImage(image)
+			{
+				if(action=="bild")
+				{
+				fenster.document.getElementById("viewbody").innerHTML="<img src=\""+aktuell+"\" id=\"old\"><img src=\""+image+"\" id=\"new\">";
+				document.getElementById("preview").innerHTML="<img src=\""+aktuell+"\" id=\"old\" height=\"100px\"><img src=\""+image+"\" id=\"new\" height=\"100px\">";
+				// positionieren vorschau
+				posx=document.getElementById("preview").style.offsetLeft+15+"px";
+				posy=document.getElementById("preview").style.offsetTop+15+"px";
+				document.getElementById("old").style.left=posx;
+				document.getElementById("old").style.top=posy;
+				document.getElementById("new").style.left=posx;
+				document.getElementById("new").style.top=posy;
+				
+				last=aktuell;
+				aktuell=image;
+				blendIn();
+				}
+			}
+
+			function getEnding(file)
+			{
+				var xnew=file.lastIndexOf(".");
+				var ynew=file.length;
+				return file.substring(ynew,xnew);
+			}
+
+			function getInc(file)
+			{
+					var inc;
+
+					var xnew=file.lastIndexOf(".");
+					var ynew=file.length;
+					var endingNew=file.substring(ynew,xnew);
+					if(endingNew==".jpeg" || endingNew==".jpg" || endingNew==".gif")
+					{
+						inc="<img src=\""+file+"\" id=\"new\">";
+					}
+					if(endingNew==".ogg")
+					{
+						inc="<video src=\""+file+"\" autoplay id=\"new\"></video>";
+					}
+					alert("in: "+file);
+					alert("lastindexof: "+xnew);
+					alert("length: "+ynew);
+					alert("ending: "+endingNew);
+					alert("inc: "+inc);
+					return inc;
+			}
+			function blendIn(wert)
+			{
+				if(arguments.length==0)
+				var wert=0.04;
+				
+				fenster.document.getElementById("new").style.opacity=wert;
+				document.getElementById("new").style.opacity=wert;
+				if(wert<1)
+				{
+					window.setTimeout("blendIn("+(wert+0.04)+");",40);
+				}
+				
+			}
+
+			function prepreview(image)
+			{
+				ereignis=window.event;
+				document.getElementById("prepreview").style.left=ereignis.clientX+10+"px";
+				document.getElementById("prepreview").style.top=ereignis.clientY+10+"px";
+				document.getElementById("prepreview").innerHTML="<img src=\""+image+"\" height=\"50px\">";
+				document.getElementById("prepreview").style.display="block";
+			}
+
+			function hideprepreview()
+			{
+				document.getElementById("prepreview").style.display="none";
+			}
+
+			function actionSchwarz()
+			{
+				if(action!="schwarz")
+				{
+					showImage(black);
+					action="schwarz";
+					toggle();
+				}
+			}
+
+			function actionBild()
+			{
+				if(action!="bild")
+				{
+					action="bild";
+					showImage(last);
+					toggle();
+				}
+			}
+
+			function toggle()
+			{
+				var b1;
+				var b2;
+				if(action=="schwarz")
+				{
+					b1="buttonSchwarz";
+					b2="buttonBild";
+				}
+				if(action=="bild")
+				{
+					b1="buttonBild";
+					b2="buttonSchwarz";
+				}
+				document.getElementById(b1).style.backgroundColor="#0f0";
+				document.getElementById(b1).style.color="#000";
+				document.getElementById(b2).style.backgroundColor="#000";
+				document.getElementById(b2).style.color="#0f0";
+			}
+
+			var dragobject=null;
+			var dragx=0;
+			var dragy=0;
+			var posx=0;
+			var posy=0;
+
+			function dragstart(element)
+			{
+				dragobject=element;
+				dragx=posx-dragobject.offsetLeft;
+				dragy=posy-dragobject.offsetTop;
+				dragobject.style.border="dashed";
+				dragobject.style.borderWidth="1px";
+			}
+
+			function dragstop()
+			{
+				if(dragobject!=null)
+				{
+					dragobject.style.border="solid";
+					dragobject.style.borderWidth="1px";
+				}
+				dragobject=null;
+			}
+
+			function drag(ereignis)
+			{
+				posx=document.all ? window.event.clientX : ereignis.pageX;
+				posy=document.all ? window.event.clientY : ereignis.pageY;
+
+				if(dragobject!=null)
+				{
+					dragobject.style.left=(posx-dragx)+"px";
+					dragobject.style.top=(posy-dragy)+"px";
+				}
+			}
+
+			function keyPressed(ereignis)
+			{
+				var code;
+				if(!ereignis)
+					ereignis=window.event;
+				if(ereignis.which)
+				{
+					code=ereignis.which;
+				} else {
+					code=ereignis.keyCode;
+				}
+
+				if(ereignis.shiftKey)
+				{
+					if(code==83)
+						actionSchwarz();
+					if(code==66)
+						actionBild();
+				}
+			}
+
+			function startClock()
+			{
+				uhr=new Date();
+				ding=(uhr.getHours()<10?"0"+uhr.getHours():uhr.getHours())+":"+(uhr.getMinutes()<10?"0"+uhr.getMinutes():uhr.getMinutes())+":"+(uhr.getSeconds()<10?"0"+uhr.getSeconds():uhr.getSeconds());
+				document.getElementById("clock").innerHTML=ding;
+			}
+
+			function warn(msg)
+			{
+				document.getElementById("warner").innerHTML=msg;
+				document.getElementById("warner").style.display="block";
+				warnoff=window.setTimeout("closeWarner();",3000);
+			}
+
+			function closeWarner()
+			{
+				document.getElementById("warner").style.display="none";
+				window.clearTimeout(warnoff);
+			}
+
+			function leave()
+			{
+				alert("Test");
+				closeView();
+				window.close();
+			}
+
+			function noreturn(e)
+			{
+				e.keyCode==13?add(document.addForm.datei.value,document.addForm.comment.value):void(0);
+				return e.keyCode==13?false:true;
+			}
+
+//-->
+		</script>
+	</head>
+	<body onload="setUp();" onkeydown="keyPressed();" onbeforeunload="closeView();">
+		<div id="clock" onmousedown="dragstart(this);" style="position:absolute;left:30px;top:500px;cursor:default;"></div>
+		<div id="addbox" onmousedown="dragstart(this);" style="position:absolute;left:20px;top:300px;">
+			<form name="addForm" onsubmit="add(this.datei.value,this.comment.value);" action="void(0);">
+				<input type="text" name="datei" value="Dateiname" onclick="this.value=='Dateiname'?this.value='':void(0);" onblur="if(this.value=='') this.value='Dateiname';" onchange="addFormChange(this.value);" onmousedown="void(0);" onkeypress="return noreturn(event);" ondrop="stopPropagation(); preventDefault()" ondragover="return false;"><br>
+				<input type="text" name="comment" value="Kommentar/Titel" onclick="this.value=='Kommentar/Titel'?this.value='':void(0);" onblur="if(this.value=='') this.value='Kommentar/Titel';" onmousedown="void(0);" onkeypress="return noreturn(event);"><br>
+				<input type="button" onclick="add(document.addForm.datei.value,document.addForm.comment.value);" value="Hinzuf&uuml;gen">
+		</div>
+		<div id="action" onmousedown="dragstart(this);" style="left:20px;top:20px;">
+			<u><b>Aktionen:</b></u><br>
+			<input type="button" value="schwarz" onclick="actionSchwarz();" id="buttonSchwarz"><br>
+			<input type="button" value="bild" onclick="actionBild();" id="buttonBild"><br>
+			<a href="#" onclick="openView();">VIEW &ouml;ffnen</a><br>
+			<a href="#" onclick="closeView();">VIEW schlie&szlig;en</a><br>
+			<a href="#" onclick="warn('WARNER');">Warner anzeigen</a><br>
+			<a href="#" onclick="leave();">Schlie&szlig;en</a><br>
+		</div>
+
+		<div id="list" onmousedown="dragstart(this);" style="left:220px;top:20px;cursor:default;">
+			Liste muss erst noch geladen werden.
+		</div>
+
+		<div id="preview" onmousedown="dragstart(this);" style="left:450px;top:20px;"></div>
+
+		<div id="prepreview" style="position:absolute;background-color:#000;"></div>
+		<div id="warner" style="position:absolute;background-color:#f00;color:#fff;cursor:default;" onmousedown="dragstart(this);" onclick="closeWarner();">CSS muss aktiviert sein</div>
+		<div id="jscheck" style="position:absolute;top:10px;left:10px;height:100px;width:300px;cursor:default;">Javascript muss aktiviert sein!!!</div>
+		<div id="copyright" style="position:fixed;bottom:2px;right:5px;cursor:default;">Copyright &copy; 2012 Joel Fridolin Meyer &quot;sirjofri&quot;</div>
+	</body>
+</html>
