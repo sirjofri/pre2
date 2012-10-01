@@ -23,7 +23,7 @@
 			var action="bild";
 			var lastz=0;
 			
-			var about_dialog="&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz";
+			var about_dialog="&copy; Copyright 2012 <a href=\"http://github.com/sirjofri\" target=\"_blank\">sirjofri</a> &amp; Team<br><br>theTeam:<br><a href=\"http://github.com/Tonixyz\" target=\"_blank\">Tonixyz</a><br><a href=\"http://github.com/sirjofri\" target=\"_blank\">sirjofri</a>";
 
 			window.setInterval("startClock();",1000);
 
@@ -143,10 +143,11 @@
 			function show_about()
 			{
 				document.getElementById("about").style.display="block";
-				document.getElementById("about").innerHTML="<center>";
-				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"Close\" onclick=\"hide_about();\"><br>";
-				document.getElementById("about").innerHTML=about_dialog;
-				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div></center>";
+				document.getElementById("about").style.zIndex=lastz;
+				document.getElementById("about").innerHTML="";
+				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"schlie&szlig;en\" onclick=\"hide_about();\"><br>";
+				document.getElementById("about").innerHTML+=about_dialog;
+				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div>";
 				document.getElementById("license").innerHTML="Hier kommt sp&auml;ter die Lizenz hin";
 			}
 			
@@ -366,7 +367,7 @@
 				dragy=posy-dragobject.offsetTop;
 				dragobject.style.border="dashed";
 				dragobject.style.borderWidth="1px";
-				lastz=lastz++;
+				lastz=lastz+1;
 				dragobject.style.zIndex=lastz;
 				document.getElementById("warner").style.zIndex=lastz;
 			}
@@ -476,7 +477,7 @@
 		<div id="preview" onmousedown="dragstart(this);" style="z-index:0; left:450px;top:20px;"></div>
 
 		<div id="prepreview" style="position:absolute;background-color:#000;"></div>
-		<div id="about" style="position:absolute;background-color:000;left:200px;top:100px;height:500px;width:400px;display:none;" onmousedown="dragstart(this);"></div>
+		<div id="about" style="position:absolute;background-color:000;left:200px;top:100px;height:500px;width:400px;display:none;z-index:0;" align="center" onmousedown="dragstart(this);"></div>
 		<div id="warner" style="position:absolute;background-color:#f00;color:#fff;cursor:default;" onmousedown="dragstart(this);" onclick="closeWarner();">CSS muss aktiviert sein</div>
 		<div id="jscheck" style="position:absolute;top:10px;left:10px;height:100px;width:300px;cursor:default;">Javascript muss aktiviert sein!!!</div>
 	</body>
