@@ -23,7 +23,7 @@
 			var action="bild";
 			var lastz=0;
 			
-			var about_dialog="&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz<br><iframe id=\"license\" height=\"300\" width=\"300\">Ihr Browser kennt keine Iframes</iframe>";
+			var about_dialog="&copy; Copyright 2012 sirjofri &amp; Team<br><br>theTeam:<br>Tonixyz";
 
 			window.setInterval("startClock();",1000);
 
@@ -145,8 +145,9 @@
 				document.getElementById("about").style.display="block";
 				document.getElementById("about").innerHTML="<center>";
 				document.getElementById("about").innerHTML=about_dialog;
+				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div>";
 				document.getElementById("about").innerHTML+="<br><input type=\"button\" value=\"Close\" onclick=\"hide_about();\"></center>";
-				document.getElementById("license").document.write="Hier kommt sp&auml;ter die Lizenz hin";
+				document.getElementById("license").innerHTML="Hier kommt sp&auml;ter die Lizenz hin";
 			}
 			
 			function hide_about()
