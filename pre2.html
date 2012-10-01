@@ -144,9 +144,9 @@
 			{
 				document.getElementById("about").style.display="block";
 				document.getElementById("about").innerHTML="<center>";
+				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"Close\" onclick=\"hide_about();\"><br>";
 				document.getElementById("about").innerHTML=about_dialog;
-				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div>";
-				document.getElementById("about").innerHTML+="<br><input type=\"button\" value=\"Close\" onclick=\"hide_about();\"></center>";
+				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div></center>";
 				document.getElementById("license").innerHTML="Hier kommt sp&auml;ter die Lizenz hin";
 			}
 			
