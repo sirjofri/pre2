@@ -13,6 +13,7 @@
 		#buttonBild { background-color:#0f0;color:#000; }
 		#warner { display:none; }
 		</style>
+		<script type="text/javascript" language="javascript" src="./lang.js"></script>
 		<script type="text/javascript" language="javascript"><!--
 			var list=new Array();
 			var listc=new Array();
@@ -30,7 +31,7 @@
 			function setUp()
 			{
 				document.getElementById("jscheck").style.display="none";
-				document.getElementById("list").innerHTML="Laden...";
+				document.getElementById("list").innerHTML=text_load;
 				fenster=window.open("about:blank","VIEW","scrollbars=false");
 				fenster.document.write("<html><head><title>VIEW<\/title><style type=\"text\/css\">img { position:absolute;top:0px;left:0px; } #new { opacity:0.0; }<\/style><\/head><body style=\"overflow:hidden;background-color:#000;\"><div id=\"viewbody\" style=\"background-color:#000;\"><img src=\""+black+"\" id=\"old\"><img src=\""+black+"\" id=\"new\"></div><\/body><\/html>");
 				fenster.focus();
@@ -53,7 +54,7 @@
 					fenster.focus();
 					showImage(aktuell);
 				} else {
-					warn("Fenster bereits offen");
+					warn(text_window_opened);
 				}
 			}
 
@@ -63,7 +64,7 @@
 				{
 					fenster.close();
 				} else {
-					warn("Fenster bereits zu");
+					warn(text_window_closed);
 				}
 			}
 
@@ -91,7 +92,7 @@
 
 			function loadList()
 			{
-				document.getElementById("list").innerHTML="<u><b>Liste:</b></u><br>";
+				document.getElementById("list").innerHTML="<u><b>"+text_list+"</b></u><br>";
 
 				while(list.length!=0)
 				{
@@ -103,7 +104,7 @@
 
 			function add(file,comment)
 			{
-			if(file!="" && comment!="" && file!="Dateiname" && comment!="Kommentar/Titel")
+			if(file!="" && comment!="" && file!=text_filename && comment!=text_comment-title)
 			{
 				if(getEnding(file)==".jpeg" || getEnding(file)==".jpg" || getEnding(file)==".png" || getEnding(file)==".gif")
 				{
@@ -125,16 +126,16 @@
 						localStorage.setItem("l"+i.toString(),file);
 						localStorage.setItem("c"+i.toString(),comment);
 						document.addForm.datei.value="";
-						document.addForm.comment.value="Kommentar/Titel";
+						document.addForm.comment.value=text_comment-title;
 						document.addForm.datei.focus();
 					} else {
-						warn("Existiert bereits!");
+						warn(text_exists);
 					}
 				} else {
-					warn("kein unterst&uuml;tzter Dateityp");
+					warn(text_not_usable);
 				}
 			} else {
-				warn("Nicht vollst&auml;ndig ausgef&uuml;llt.");
+				warn(text_not_filled);
 			}
 			loadFromStorage();
 			loadList();
@@ -145,10 +146,10 @@
 				document.getElementById("about").style.display="block";
 				document.getElementById("about").style.zIndex=lastz;
 				document.getElementById("about").innerHTML="";
-				document.getElementById("about").innerHTML+="<input type=\"button\" value=\"schlie&szlig;en\" onclick=\"hide_about();\"><br>";
+				document.getElementById("about").innerHTML+="<input type=\"button\" value=\""+text_close+"\" onclick=\"hide_about();\"><br>";
 				document.getElementById("about").innerHTML+=about_dialog;
-				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">Lizenz</div>";
-				document.getElementById("license").innerHTML="Hier kommt sp&auml;ter die Lizenz hin";
+				document.getElementById("about").innerHTML+="<div id=\"license\" style=\"overflow:auto;height:300px;width:300px;\">"+text_licence+"</div>";
+				document.getElementById("license").innerHTML=text_licence_text;
 			}
 			
 			function hide_about()
@@ -159,9 +160,9 @@
 
 			function addFormChange(file)
 			{
-				if(file.search("Dateiname")!=-1)
+				if(file.search(text_filename)!=-1)
 				{
-					document.addForm.datei.value=file.replace(/Dateiname/g, "");
+					document.addForm.datei.value=file.replace(text_filename_replace, "");
 				}
 			}
 
@@ -181,7 +182,7 @@
 							localStorage.removeItem("l"+j.toString());
 							localStorage.removeItem("c"+j.toString());
 						} else {
-							warn("Element nicht ganz unten");
+							warn(text_element_not_down);
 						}
 					}
 				}

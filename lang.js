@@ -1,0 +1,14 @@
+var text_load="Laden ...";
+var text_window_opened="Fenster bereits offen";
+var text_window_closed="Fenster bereits zu";
+var text_list="Liste:";
+var text_comment-title="Kommentar/Titel";
+var text_filename="Dateiname";
+var text_exists="Existiert bereits!");
+var text_not_usable="kein unterst&uuml;tzter Dateityp";
+var text_not_filled="Nicht vollst&auml;ndig ausgef&uuml;llt";
+var text_close="Schlie&szlig;en";
+var text_licence="Lizenz";
+var text_licence_text="Hier kommt sp&auml;ter die Lizenz hin";
+var text_filename_replace="/Dateiname/g";
+var text_element_not_down="Element nicht ganz unten");
